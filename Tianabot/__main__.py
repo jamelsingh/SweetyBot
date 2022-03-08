@@ -366,7 +366,7 @@ def tiana_callback_handler(update, context):
                      InlineKeyboardButton(text="➕ 𝘼𝙡𝙡 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨 ➕", callback_data="help_back"),
                     ],                           
                     [InlineKeyboardButton(text="𝙈𝙪𝙨𝙞𝙘 𝘽𝙤𝙩 🎧", callback_data="tiana_music"),
-                     InlineKeyboardButton(text="𝙁𝙪𝙣 𝙏𝙤𝙤𝙡𝙨 ⚙", callback_data="tiana_tools")],
+                    [InlineKeyboardButton(text="𝙁𝙪𝙣 𝙏𝙤𝙤𝙡𝙨 ⚙", callback_data="tiana_tools")],
                     [InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_back")],
                 ]
             ),
@@ -467,27 +467,7 @@ Nᴏᴛᴇ-  ɴɪɢʜᴛ  ᴍᴏᴅᴇ  ᴄʜᴀᴛs  ɢᴇᴛ  ᴀᴜᴛᴏᴍ�
                 ]
             ),
         )
-    elif query.data == "tiana_term":
-        query.message.edit_text(
-            text=f"""✗ *Terms and Conditions:*
-
-- Only your first name, last name (if any) and username (if any) is stored for a convenient communication!
-- No group ID or it's messages are stored, we respect everyone's privacy.
-- Messages between Bot and you is only infront of your eyes and there is no backuse of it.
-- Watch your group, if someone is spamming your group, you can use the report feature of your Telegram Client.
-- Do not spam commands, buttons, or anything in bot PM.
-
-*NOTE:* Terms and Conditions might change anytime
-
-*Updates Channel:* @{UPDATE_CHANNEL}
-*Support Chat:* @{SUPPORT_GROUP}""",
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [[
-                InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="about_")]]
-            ),
-        )
+    
     elif query.data == "tiana_helpe":
         query.message.edit_text(
             text="""*× Sᴏ  Nᴏᴡ  Yᴏᴜ  Aʀᴇ  Aᴛ  Tʜᴇ  Eɴᴅ  Oғ  Bᴀsɪᴄ  Tᴏᴜʀ.  Bᴜᴛ  Tʜɪs  Is  Nᴏᴛ  Aʟʟ  I  Cᴀɴ  Dᴏ.
@@ -515,13 +495,11 @@ Aɢᴀɪɴ  Tʜᴀɴᴋs  Fᴏʀ  Usɪɴɢ  Mᴇ
             f"\n\n1.) first, add me to your group."
             f"\n\n2.) then promote me as admin and give all permissions except anonymous admin."
             f"\n\n3.) add @{ASS_USERNAME} to your group."
-            f"\n\n4.) turn on the video chat first before start to play music."
-            f"\n\n*✗ Lets Enjoy The Tiana Music And Join Support Group @PrincexSupport*"
+            f"\n\n4.) turn on the video chat first before start to play music."  
             f"\n\n*✗ Pᴏᴡᴇʀᴇᴅ Bʏ:* @{UPDATE_CHANNEL}",
             parse_mode=ParseMode.MARKDOWN,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
-               [[InlineKeyboardButton(text="𝙎𝙚𝙩𝙪𝙥 𝙏𝙪𝙩𝙤𝙧𝙞𝙖𝙡 🎥", callback_data="tiana_vidb")],
                 [InlineKeyboardButton(text="𝙋𝙡𝙖𝙮 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨", callback_data="tiana_musica"),
                  InlineKeyboardButton(text="𝘽𝙤𝙩 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨", callback_data="tiana_musicc")],
                 [InlineKeyboardButton(text="𝘼𝙙𝙢𝙞𝙣 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨", callback_data="tiana_musicb"),
@@ -680,7 +658,6 @@ Support
                 [
                  [
                     InlineKeyboardButton(text="Nᴇᴡꜱ", url=f"t.me/{UPDATE_CHANNEL}"),
-                    InlineKeyboardButton(text="Dᴏɴᴀᴛᴇ Mᴇ", url=f"{DONATION_LINK}"),
                  ],
                  [
                     InlineKeyboardButton(text="Sᴜᴘᴘᴏʀᴛ", url=f"t.me/{SUPPORT_CHAT}"),
@@ -704,14 +681,14 @@ Click on below buttons and check amazing tools for users.*""",
             reply_markup=InlineKeyboardMarkup(
                 [
                  [
-                    InlineKeyboardButton(text="Sᴇᴀʀᴄʜ", callback_data="tiana_toola"),
-                    InlineKeyboardButton(text="Tᴀɢᴀʟʟ", callback_data="tiana_toolb"),
-                    InlineKeyboardButton(text="Kᴀʀᴍᴀ", callback_data="tiana_toolc"),
+                    InlineKeyboardButton(text="🔎Sᴇᴀʀᴄʜ🔍", callback_data="tiana_toola"),
+                    InlineKeyboardButton(text="🏷️Tᴀɢᴀʟʟ🏷️", callback_data="tiana_toolb"),
+                    InlineKeyboardButton(text="🛠️Kᴀʀᴍᴀ🛠️", callback_data="tiana_toolc"),
                  ],
                  [
-                    InlineKeyboardButton(text="Fᴏɴᴛ Gᴇɴ", callback_data="tiana_toold"),
-                    InlineKeyboardButton(text="Pᴀꜱᴛᴇ", callback_data="tiana_toole"),
-                    InlineKeyboardButton(text="Tᴇʟᴇɢʀᴀᴘʜ", callback_data="tiana_toolf"),
+                    InlineKeyboardButton(text="✒️Fᴏɴᴛ Gᴇɴ🖊️", callback_data="tiana_toold"),
+                    InlineKeyboardButton(text="🖨️Pᴀꜱᴛᴇ🖨️", callback_data="tiana_toole"),
+                    InlineKeyboardButton(text="🔗Tᴇʟᴇɢʀᴀᴘʜ🔗", callback_data="tiana_toolf"),
                  ],
                  [
                     InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_"),
@@ -798,20 +775,7 @@ DOWNVOTE - Use downvote keywords like "-", "-1", etc to downvote a cb.message.
                 [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_tools")]]
             ),
         )
-    elif query.data == "tiana_source":
-        query.message.edit_text(
-            text="""*Tianabot is Now Open Source Bot Project.*
-
-*Click below Button to Get Source Code.*""",
-            parse_mode=ParseMode.MARKDOWN,
-            reply_markup=InlineKeyboardMarkup(
-                [
-                 [
-                    InlineKeyboardButton(text="📄 𝙎𝙤𝙪𝙧𝙘𝙚", url="github.com/Prince-Botz/Tianabot"),
-                 ]
-                ]
-            ),
-        )
+    
     elif query.data == "tiana_vida":
         query.message.reply_video(
             TIANA_VIDA,
@@ -1087,7 +1051,6 @@ def main():
     about_callback_handler = CallbackQueryHandler(tiana_callback_handler, pattern=r"tiana_")
     Tiana_callback_handler = CallbackQueryHandler(tiana_about_callback, pattern=r"about_")
   
-    donate_handler = CommandHandler("donate", donate)
     migrate_handler = MessageHandler(Filters.status_update.migrate, migrate_chats)
 
     # dispatcher.add_handler(test_handler)
@@ -1099,8 +1062,6 @@ def main():
     dispatcher.add_handler(help_callback_handler)
     dispatcher.add_handler(settings_callback_handler)
     dispatcher.add_handler(migrate_handler)
-    dispatcher.add_handler(donate_handler)
-
     dispatcher.add_error_handler(error_callback)
 
     if WEBHOOK:
