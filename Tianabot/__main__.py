@@ -3,7 +3,6 @@ import time
 import re
 from sys import argv
 from typing import Optional
-import Tianabot.modules.sql.users_sql as sql
 
 from Tianabot import (
     ALLOW_EXCL,
@@ -12,16 +11,9 @@ from Tianabot import (
     LOGGER,
     OWNER_ID,
     PORT,
-    BOT_TUT,
-    MUSICBOT_TUT,
-    UPDATE_CHANNEL,
-    BOT_USERNAME,
-    BOT_NAME,
-    ASS_USERNAME,
-    START_IMG,
+    SUPPORT_CHAT,
     TOKEN,
     URL,
-    OWNER_USERNAME,
     WEBHOOK,
     SUPPORT_CHAT,
     dispatcher,
@@ -55,6 +47,7 @@ from telegram.ext import (
 from telegram.ext.dispatcher import DispatcherHandlerStop, run_async
 from telegram.utils.helpers import escape_markdown
 
+
 def get_readable_time(seconds: int) -> str:
     count = 0
     ping_time = ""
@@ -81,35 +74,61 @@ def get_readable_time(seconds: int) -> str:
 
 
 
-PM_START_TEXT = """
-*Hᴇʟʟᴏ {} * [!]({})
-───────────────────────
-🔴 *ιαм ѕωєєту gяσυρ мαиαgємєит вσт*
-🔵 *ιαм νєяу fαѕт αи∂ мσяє єffι¢ιєит ρяσνι∂є αωєѕσмє fєαтυяєѕ*
-──────────────────────
-⚠️ *Hit /help to find out more about how to use me to my full potential.*
-───────────────────────"""
+PM_START_TEXT = """Hello, My name is ༒ 𝙏𝙄𝘼𝙉𝘼 ༒
+
+Hey , I am a Group Manager,
+Made specially for Managing Groups.
+
+This Pro bot was made by [ℙℝ𝕀ℕℂ𝔼](@prince_3011)
+Click /help or use button below to find out more about how to use me to my full potential."""
 
 buttons = [
-    [  
-        InlineKeyboardButton(text="➕️ 𝘼𝙙𝙙 𝙢𝙚 𝙩𝙤 𝙔𝙤𝙪𝙧 𝙂𝙧𝙤𝙪𝙥 ➕️", url=f"https://t.me/{BOT_USERNAME}?startgroup=true"),
+    [
+        InlineKeyboardButton(
+            text="➕️ 𝐀𝐃𝐃 ༒ 𝙏𝙄𝘼𝙉𝘼 ༒ 𝐓𝐎 𝐘𝐎𝐔𝐑 𝐆𝐑𝐎𝐔𝐏 ➕️", url="t.me/Tiana_Prince_bot?startgroup=true"),
     ],
     [
-        InlineKeyboardButton(text="❓ 𝘾𝙤𝙢𝙢𝙖𝙣𝙙 𝙃𝙚𝙡𝙥 ❗️", callback_data="tiana_"),
+        InlineKeyboardButton(text="📱𝐈𝐍𝐅𝐎", callback_data="masha_"),
+        InlineKeyboardButton(text="⚜️𝐇𝐄𝐋𝐏", callback_data="help_back"),
     ],
-    
    [
-        InlineKeyboardButton(text="📇 Cheanal ", url=f"http://t.me/{UPDATE_CHANNEL}"),
-        InlineKeyboardButton(text="Group 🫂", url=f"https://t.me/{SUPPORT_CHAT}"),
-    ],  
+        InlineKeyboardButton(
+            text="🎵 𝐌𝐔𝐒𝐈𝐂 𝐆𝐑𝐎𝐔𝐏 🎧", url="http://t.me/MUSIC_AND_CHATS")
+   ],
+   [
+        InlineKeyboardButton(
+            text="✨ 𝐌𝐘 𝐁𝐅 ✨", url="http://t.me/joey_prince_bot"),
+        InlineKeyboardButton(
+            text="⚜️ 𝐂𝐇𝐀𝐍𝐍𝐄𝐋 ⚜️", url="https://t.me/PRINCEBOTS"),
+    ],
+    [  
+        InlineKeyboardButton(text="👥 𝐒𝐔𝐏𝐏𝐎𝐑𝐓 𝐆𝐑𝐎𝐔𝐏 👥", url="https://t.me/PRINCEBOTSUPPORT"),
+    ], 
     
 ]
 
-TIANA_IMG = f"{START_IMG}"
-TIANA_VIDA = f"{BOT_TUT}"
-TIANA_VIDB = f"{MUSICBOT_TUT}"
+TIANA_IMG = "https://telegra.ph/file/5033de333ba8a70a216ad.mp4"
 
-HELP_STRINGS = """*Click on the Buttons Bellow to get Documention about Specific Modules*"""
+HELP_STRINGS = """
+Hey There! My Name is 𝙏𝙄𝘼𝙉𝘼.
+
+I'm a Heroine For Fun and help admins to manage their groups! Have a look at the following for an idea of some of the things I can help you with.
+
+• Main commands available:
+ • /help: PM's you this message.
+ • /help <module name>: PM's you info about that module.
+ • /donate: information on how to donate!
+ • /settings:
+   • in PM: will send you your settings for all supported modules.
+   • in a group: will redirect you to pm, with all that chat's settings.
+
+All commands can either be used with / or !.
+
+And the following:
+"""
+
+
+DONATE_STRING ="""No need.. I'm rich"""
 
 IMPORTED = {}
 MIGRATEABLE = []
@@ -133,9 +152,6 @@ for module_name in ALL_MODULES:
 
     if hasattr(imported_module, "__help__") and imported_module.__help__:
         HELPABLE[imported_module.__mod_name__.lower()] = imported_module
-
-    if hasattr(imported_module, "__sub_mod__") and imported_module.__sub_mod__:
-        SUB_MODE[imported_module.__mod_name__.lower()] = imported_module
 
     # Chats to migrate on chat_migrated events
     if hasattr(imported_module, "__migrate__"):
@@ -213,40 +229,20 @@ def start(update: Update, context: CallbackContext):
             elif args[0][1:].isdigit() and "rules" in IMPORTED:
                 IMPORTED["rules"].send_rules(update, args[0], from_pm=True)
 
-        else:    
-            first_name = update.effective_user.first_name
+        else:
             update.effective_message.reply_text(
-                PM_START_TEXT.format(
-                    escape_markdown(first_name),
-                    START_IMG,
-                    escape_markdown(uptime),
-                    sql.num_users(),
-                    sql.num_chats()),
+                PM_START_TEXT,
                 reply_markup=InlineKeyboardMarkup(buttons),
                 parse_mode=ParseMode.MARKDOWN,
                 timeout=60,
             )
     else:
-          first_name = update.effective_user.first_name
-          update.effective_message.reply_photo(
-                TIANA_IMG, caption="""*Hᴇʟʟᴏ {} !*
-───────────────────
-🔴 *ιαм ѕωєєту gяσυρ мαиαgємєит вσт*
-🔵 *ιαм νєяу fαѕт αи∂ мσяє єffι¢ιєит ρяσνι∂є αωєѕσмє fєαтυяєѕ*
-──────────────────────
-⚠️ *Hit /help to find out more about how to use me to my full potential.*
-───────────────────""".format(
-                    escape_markdown(first_name),
-                    sql.num_users(),
-                    sql.num_chats()),
-                reply_markup=InlineKeyboardMarkup(
-                 [
-                  [InlineKeyboardButton(text="📄 Cheanal", url=f"https://t.me/{UPDATE_CHANNEL}"), 
-                   InlineKeyboardButton(text="🫂 Support", url=f"https://t.me/{SUPPORT_CHAT}")]
-                 ]
-              ),
-                parse_mode=ParseMode.MARKDOWN,              
-            )
+          update.effective_message.reply_video(
+                TIANA_IMG, caption= "I'm awake already!\n<b>Haven't slept since:</b> <code>{}</code>".format(
+                uptime
+            ),
+            parse_mode=ParseMode.HTML,
+        )
 
 
 def error_handler(update, context):
@@ -311,6 +307,8 @@ def error_callback(update: Update, context: CallbackContext):
 def help_button(update, context):
     query = update.callback_query
     mod_match = re.match(r"help_module\((.+?)\)", query.data)
+    prev_match = re.match(r"help_prev\((.+?)\)", query.data)
+    next_match = re.match(r"help_next\((.+?)\)", query.data)
     back_match = re.match(r"help_back", query.data)
 
     print(query.message.chat.id)
@@ -319,7 +317,7 @@ def help_button(update, context):
         if mod_match:
             module = mod_match.group(1)
             text = (
-                "「 Hᴇʟᴘ ᴏғ *{}* 」:\n".format(
+                "「 *HELP FOR* *{}* 」:\n".format(
                     HELPABLE[module].__mod_name__
                 )
                 + HELPABLE[module].__help__
@@ -329,7 +327,27 @@ def help_button(update, context):
                 parse_mode=ParseMode.MARKDOWN,
                 disable_web_page_preview=True,
                 reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(text="◀ Bᴀᴄᴋ ", callback_data="help_back")]]
+                    [[InlineKeyboardButton(text="「 GO BACK 」", callback_data="help_back")]]
+                ),
+            )
+
+        elif prev_match:
+            curr_page = int(prev_match.group(1))
+            query.message.edit_text(
+                text=HELP_STRINGS,
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=InlineKeyboardMarkup(
+                    paginate_modules(curr_page - 1, HELPABLE, "help")
+                ),
+            )
+
+        elif next_match:
+            next_page = int(next_match.group(1))
+            query.message.edit_text(
+                text=HELP_STRINGS,
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=InlineKeyboardMarkup(
+                    paginate_modules(next_page + 1, HELPABLE, "help")
                 ),
             )
 
@@ -351,444 +369,65 @@ def help_button(update, context):
 
 
 @run_async
-def tiana_callback_handler(update, context):
+def Masha_about_callback(update: Update, context: CallbackContext):
     query = update.callback_query
-    if query.data == "tiana_":
+    if query.data == "masha_":
         query.message.edit_text(
-            text="""𝙒𝙚𝙡𝙘𝙤𝙢𝙚 𝙩𝙤 𝙃𝙚𝙡𝙥 𝙈𝙚𝙣𝙪. 
-────────────────────────
-*Sᴇʟᴇᴄᴛ  Aʟʟ  Cᴏᴍᴍᴀɴᴅs  Fᴏʀ  Fᴜʟʟ  Hᴇʟᴘ  Oʀ  Sᴇʟᴇᴄᴛ  Cᴀᴛᴀɢᴏʀʏ  Fᴏʀ  Mᴏʀᴇ  Hᴇʟᴘ  Dᴏᴄᴜᴍᴇɴᴛᴀᴛɪᴏɴ  Oɴ  Sᴇʟᴇᴄᴛᴇᴅ  Fɪᴇʟᴅs*""",
+            text=""" ℹ️ I'm *TIANA*, a powerful group management bot built to help you manage your group easily.
+                 ❍ I can restrict users.
+                 ❍ I can greet users with customizable welcome messages and even set a group's rules.
+                 ❍ I have an advanced anti-flood system.
+                 ❍ I can warn users until they reach max warns, with each predefined actions such as ban, mute, kick, etc.
+                 ❍ I have a note keeping system, blacklists, and even predetermined replies on certain keywords.
+                 ❍ I check for admins' permissions before executing any command and more stuffs
+                 \n_Masha's licensed under the GNU General Public License v3.0_
+                 Here is the [💾Repository](https://github.com/prince301102/tiana-2.0).
+                 If you have any question about masha, let us know at @princebotsupport.""",
             parse_mode=ParseMode.MARKDOWN,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
-                    [
-                     InlineKeyboardButton(text="➕ 𝘼𝙡𝙡 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨 ➕", callback_data="help_back"),
-                    ],                           
-                    [InlineKeyboardButton(text="𝙈𝙪𝙨𝙞𝙘 𝘽𝙤𝙩 🎧", callback_data="tiana_music"),
-                    [InlineKeyboardButton(text="𝙁𝙪𝙣 𝙏𝙤𝙤𝙡𝙨 ⚙", callback_data="tiana_tools")],
-                    [InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_back")],
+                 [
+                    InlineKeyboardButton(text="Back", callback_data="masha_back")
+                 ]
                 ]
             ),
         )
-    elif query.data == "tiana_back":
-        first_name = update.effective_user.first_name
-        uptime = get_readable_time((time.time() - StartTime))
+    elif query.data == "masha_back":
         query.message.edit_text(
-                PM_START_TEXT.format(
-                    escape_markdown(first_name),
-                    START_IMG,
-                    escape_markdown(uptime),
-                    sql.num_users(),
-                    sql.num_chats()),
+                PM_START_TEXT,
                 reply_markup=InlineKeyboardMarkup(buttons),
                 parse_mode=ParseMode.MARKDOWN,
                 timeout=60,
                 disable_web_page_preview=False,
         )
-    elif query.data == "tiana_help":
+
+
+@run_async
+def Source_about_callback(update: Update, context: CallbackContext):
+    query = update.callback_query
+    if query.data == "source_":
         query.message.edit_text(
-            text=f"""*Nᴇᴡ  Tᴏ  {BOT_NAME}!  Hᴇʀᴇ  Is  Tʜᴇ  Qᴜɪᴄᴋ  Sᴛᴀʀᴛ  Gᴜɪᴅᴇ  Wʜɪᴄʜ  Wɪʟʟ  Hᴇʟᴘ  Yᴏᴜ  Tᴏ  Uɴᴅᴇʀsᴛᴀɴᴅ  Wʜᴀᴛ  Is  {BOT_NAME}  Aɴᴅ  Hᴏᴡ  Tᴏ  Usᴇ  Iᴛ.
-
-
-Bᴇғᴏʀᴇ  Wᴇ  Gᴏ,  I  Nᴇᴇᴅ  Aᴅᴍɪɴ  Pᴇʀᴍɪssɪᴏɴs  Iɴ  Tʜɪs  Cʜᴀᴛ  Tᴏ  Wᴏʀᴋ  Pʀᴏᴘᴇʀʟʏ.
-1). Cʟɪᴄᴋ  Mᴀɴᴀɢᴇ  Gʀᴏᴜᴘ.
-2). Gᴏ  Tᴏ  Aᴅᴍɪɴɪsᴛʀᴀᴛᴏʀs  Aɴᴅ  Aᴅᴅ</b>  {BOT_USERNAME}  <b>As  Aᴅᴍɪɴ.
-3). Gɪᴠɪɴɢ  Fᴜʟʟ  Pᴇʀᴍɪssɪᴏɴs  Mᴀᴋᴇ  Tɪᴀɴᴀ  Fᴜʟʟʏ  Usᴇғᴜʟ</b>""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-              [[InlineKeyboardButton(text="⬅️", callback_data="tiana_help"),
-                InlineKeyboardButton(text="➡️", callback_data="tiana_helpb")],               
-              ]
-            ),
-        )
-    elif query.data == "tiana_helpb":
-        query.message.edit_text(
-            text="""*Cᴏɴɢʀᴀɢᴜʟᴀᴛɪᴏɴs,  Tʜɪꜱ  Bᴏᴛ  Nᴏᴡ  Rᴇᴀᴅʏ  Tᴏ  Mᴀɴᴀɢᴇ  Yᴏᴜʀ  Gʀᴏᴜᴘ
-
-Hᴇʀᴇ  Aʀᴇ  Sᴏᴍᴇ  Essᴇɴᴛɪᴀʟᴛ  Tᴏ  Tʀʏ  Oɴ Tɪᴀɴᴀ.
-
-×  Aᴅᴍɪɴ  Tᴏᴏʟs
-ʙᴀsɪᴄ  ᴀᴅᴍɪɴ  ᴛᴏᴏʟs  ʜᴇʟᴘ  ʏᴏᴜ  ᴛᴏ  ᴘʀᴏᴛᴇᴄᴛ  ᴀɴᴅ  ᴘᴏᴡᴇʀᴜᴘ  ʏᴏᴜʀ  ɢʀᴏᴜᴘ
-ʏᴏᴜ  ᴄᴀɴ  ʙᴀɴ  ᴍᴇᴍʙᴇʀs,  ᴋɪᴄᴋ  ᴍᴇᴍʙᴇʀs,  ᴘʀᴏᴍᴏᴛᴇ  sᴏᴍᴇᴏɴᴇ  ᴀs  ᴀᴅᴍɪɴ  ᴛʜʀᴏᴜɢʜ  ᴄᴏᴍᴍᴀɴᴅs  ᴏғ  ʙᴏᴛ
-
-×  Wᴇʟᴄᴏᴍᴇs
-ʟᴇᴛs  sᴇᴛ  ᴀ  ᴡᴇʟᴄᴏᴍᴇ  ᴍᴇssᴀɢᴇ  ᴛᴏ  ᴡᴇʟᴄᴏᴍᴇ  ɴᴇᴡ  ᴜsᴇʀs  ᴄᴏᴍɪɴɢ  ᴛᴏ  ʏᴏᴜʀ  ɢʀᴏᴜᴘ
-sᴇɴᴅ  /setwelcome  [ᴍᴇssᴀɢᴇ]  ᴛᴏ  sᴇᴛ  ᴀ  ᴡᴇʟᴄᴏᴍᴇ  ᴍᴇssᴀɢᴇ
-ᴀʟsᴏ  ʏᴏᴜ  ᴄᴀɴ  sᴛᴏᴘ  ᴇɴᴛᴇʀɪɴɢ  ʀᴏʙᴏᴛs  ᴏʀ  sᴘᴀᴍᴍᴇʀs  ᴛᴏ  ʏᴏᴜʀ  ᴄʜᴀᴛ  ʙʏ  sᴇᴛᴛɪɴɢ  ᴡᴇʟᴄᴏᴍᴇ  ᴄᴀᴘᴛᴄʜᴀ  
-
-Rᴇғᴇʀ  Hᴇʟᴘ  Mᴇɴᴜ  Tᴏ  Sᴇᴇ  Eᴠᴇʀʏᴛʜɪɴɢ  Iɴ  Dᴇᴛᴀɪʟ*""",
+            text=""" Hi..🤗 I'm *TIANA BOT*
+                 \nHere is the [Source Code](https://GitHub.com/prince301102/tiana-2.0) .""",
             parse_mode=ParseMode.MARKDOWN,
-            reply_markup=InlineKeyboardMarkup(
-              [
-                [InlineKeyboardButton(text="⬅️", callback_data="tiana_helpa"),
-                 InlineKeyboardButton(text="➡️", callback_data="tiana_helpc")]
-                ]
-            ),
-        )
-    elif query.data == "tiana_helpc":
-        query.message.edit_text(
-            text="""*× Fɪʟᴛᴇʀs
-ғɪʟᴛᴇʀs  ᴄᴀɴ  ʙᴇ  ᴜsᴇᴅ  ᴀs  ᴀᴜᴛᴏᴍᴀᴛᴇᴅ  ʀᴇᴘʟɪᴇs/ʙᴀɴ/ᴅᴇʟᴇᴛᴇ  ᴡʜᴇɴ  sᴏᴍᴇᴏɴᴇ  ᴜsᴇ  ᴀ  ᴡᴏʀᴅ  ᴏʀ  sᴇɴᴛᴇɴᴄᴇ
-ғᴏʀ  ᴇxᴀᴍᴘʟᴇ  ɪғ  ɪ  ғɪʟᴛᴇʀ  ᴡᴏʀᴅ  'ʜᴇʟʟᴏ'  ᴀɴᴅ  sᴇᴛ  ʀᴇᴘʟʏ  ᴀs  'ʜɪ'
-ʙᴏᴛ  ᴡɪʟʟ  ʀᴇᴘʟʏ  ᴀs  'ʜɪ'  ᴡʜᴇɴ  sᴏᴍᴇᴏɴᴇ  sᴀʏ  'ʜᴇʟʟᴏ'
-ʏᴏᴜ  ᴄᴀɴ  ᴀᴅᴅ  ғɪʟᴛᴇʀs  ʙʏ  sᴇɴᴅɪɴɢ  /filter  ғɪʟᴛᴇʀ  ɴᴀᴍᴇ
-
-× Aɪ  CʜᴀᴛBᴏᴛ
-ᴡᴀɴᴛ  sᴏᴍᴇᴏɴᴇ  ᴛᴏ  ᴄʜᴀᴛ  ɪɴ  ɢʀᴏᴜᴘ?
-Tɪᴀɴᴀ  ʜᴀs  ᴀɴ  ɪɴᴛᴇʟʟɪɢᴇɴᴛ  ᴄʜᴀᴛʙᴏᴛ  ᴡɪᴛʜ  ᴍᴜʟᴛɪʟᴀɴɢ  sᴜᴘᴘᴏʀᴛ
-ʟᴇᴛ's  ᴛʀʏ  ɪᴛ,
-Sᴇɴᴅ  /chatbot  Oɴ  Aɴᴅ  Rᴇᴘʟʏ  Tᴏ  Aɴʏ  Oғ  Mʏ  Mᴇssᴀɢᴇs  Tᴏ  Sᴇᴇ  Tʜᴇ  Mᴀɢɪᴄ*""",
-            parse_mode=ParseMode.MARKDOWN,
-            reply_markup=InlineKeyboardMarkup(
-              [
-                [InlineKeyboardButton(text="⬅️", callback_data="tiana_helpb"),
-                 InlineKeyboardButton(text="➡️", callback_data="tiana_helpd")]
-                ]
-            ),
-        )
-    elif query.data == "tiana_helpd":
-        query.message.edit_text(
-            text="""*× Sᴇᴛᴛɪɴɢ  Uᴘ  Nᴏᴛᴇs
-ʏᴏᴜ  ᴄᴀɴ  sᴀᴠᴇ  ᴍᴇssᴀɢᴇ/ᴍᴇᴅɪᴀ/ᴀᴜᴅɪᴏ  ᴏʀ  ᴀɴʏᴛʜɪɴɢ  ᴀs  ɴᴏᴛᴇs ᴜsɪɴɢ /notes
-ᴛᴏ  ɢᴇᴛ  ᴀ  ɴᴏᴛᴇ  sɪᴍᴘʟʏ  ᴜsᴇ  #  ᴀᴛ  ᴛʜᴇ  ʙᴇɢɪɴɴɪɴɢ  ᴏғ  ᴀ  ᴡᴏʀᴅ
-sᴇᴇ  ᴛʜᴇ  ɪᴍᴀɢᴇ..
-
-× Sᴇᴛᴛɪɴɢ  Uᴘ  Nɪɢʜᴛᴍᴏᴅᴇ
-ʏᴏᴜ  ᴄᴀɴ  sᴇᴛ  ᴜᴘ  ɴɪɢʜᴛᴍᴏᴅᴇ  ᴜsɪɴɢ  /nightmode  ᴏɴ/ᴏғғ  ᴄᴏᴍᴍᴀɴᴅ.
-
-Nᴏᴛᴇ-  ɴɪɢʜᴛ  ᴍᴏᴅᴇ  ᴄʜᴀᴛs  ɢᴇᴛ  ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ  ᴄʟᴏsᴇᴅ  ᴀᴛ  12ᴘᴍ(ɪsᴛ)
-ᴀɴᴅ  ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ  ᴏᴘᴇɴɴᴇᴅ  ᴀᴛ  6ᴀᴍ(ɪsᴛ)  ᴛᴏ  ᴘʀᴇᴠᴇɴᴛ  ɴɪɢʜᴛ  sᴘᴀᴍs.*""",
-            parse_mode=ParseMode.MARKDOWN,
-            reply_markup=InlineKeyboardMarkup(
-              [
-                [InlineKeyboardButton(text="⬅️", callback_data="tiana_helpc"),
-                 InlineKeyboardButton(text="➡️", callback_data="tiana_helpe")]
-                ]
-            ),
-        )
-    
-    elif query.data == "tiana_helpe":
-        query.message.edit_text(
-            text="""*× Sᴏ  Nᴏᴡ  Yᴏᴜ  Aʀᴇ  Aᴛ  Tʜᴇ  Eɴᴅ  Oғ  Bᴀsɪᴄ  Tᴏᴜʀ.  Bᴜᴛ  Tʜɪs  Is  Nᴏᴛ  Aʟʟ  I  Cᴀɴ  Dᴏ.
-
-Sᴇɴᴅ  /help  Iɴ  Bᴏᴛ  Pᴍ  Tᴏ  Aᴄᴄᴇss  Hᴇʟᴘ  Mᴇɴᴜ
-
-Tʜᴇʀᴇ  Aʀᴇ  Mᴀɴʏ  Hᴀɴᴅʏ  Tᴏᴏʟs  Tᴏ  Tʀʏ  Oᴜᴛ.  
-Aɴᴅ  Aʟsᴏ  Iғ  Yᴏᴜ  Hᴀᴠᴇ  Aɴʏ  Sᴜɢɢᴇssɪᴏɴs  Aʙᴏᴜᴛ  Mᴇ,  Dᴏɴ'ᴛ  Fᴏʀɢᴇᴛ  Tᴏ  tᴇʟʟ  Tʜᴇᴍ  Tᴏ  Dᴇᴠs
-
-Aɢᴀɪɴ  Tʜᴀɴᴋs  Fᴏʀ  Usɪɴɢ  Mᴇ
-
-× Bʏ  Usɪɴɢ  Tʜɪꜱ  Bᴏᴛ  Yᴏᴜ  Aʀᴇ  Aɢʀᴇᴇᴅ  Tᴏ  Oᴜʀ  Tᴇʀᴍs  &  Cᴏɴᴅɪᴛɪᴏɴs*""",
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="➕ 𝘼𝙡𝙡 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨 ➕", callback_data="help_back")],
-                [InlineKeyboardButton(text="⬅️", callback_data="tiana_helpd"),
-                InlineKeyboardButton(text="𝙈𝙖𝙞𝙣 𝙈𝙚𝙣𝙪", callback_data="tiana_")]]
-            ),
-        )
-    elif query.data == "tiana_music":
-        query.message.edit_text(
-            text=f"✗ *Hᴇʀᴇ Iꜱ Tʜᴇ Hᴇʟᴘ 「Aꜱꜱɪꜱᴛᴀɴᴛ」 Mᴏᴅᴜʟᴇ:*"
-            
-            f"\n\n1.) first, add me to your group."
-            f"\n\n2.) then promote me as admin and give all permissions except anonymous admin."
-            f"\n\n3.) add @{ASS_USERNAME} to your group."
-            f"\n\n4.) turn on the video chat first before start to play music."  
-            f"\n\n*✗ Pᴏᴡᴇʀᴇᴅ Bʏ:* @{UPDATE_CHANNEL}",
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [InlineKeyboardButton(text="𝙋𝙡𝙖𝙮 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨", callback_data="tiana_musica"),
-                 InlineKeyboardButton(text="𝘽𝙤𝙩 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨", callback_data="tiana_musicc")],
-                [InlineKeyboardButton(text="𝘼𝙙𝙢𝙞𝙣 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨", callback_data="tiana_musicb"),
-                 InlineKeyboardButton(text="𝙀𝙭𝙩𝙧𝙖 𝘾𝙤𝙢𝙢𝙖𝙣𝙙𝙨", callback_data="tiana_musicd")],
-                [InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_")]
-               ]
-            ),
-        )
-    elif query.data == "tiana_musica":
-        query.message.edit_text(
-            text="""✗*Here is the help for Play Commands*:
-
-*Note*: Tiana Music Bot works on a single merged commands for Music and Video
-
-✗ *Youtube and Telegram Files*:
-
-/play [Reply to any Video or Audio] or [YT Link] or [Music Name]  
-- Stream Video or Music on Voice Chat by selecting inline Buttons you get
-
-
-✗ *Tiana Database Saved Playlists*:
-
-/createplaylist
-- Create Your Playlist on Tiana's Server with Custom Name
-
-/playlist 
-- Check Your Saved Playlist On Servers.
-
-/deleteplaylist
-- Delete any saved music in your playlist
-
-/playplaylist 
-- Start playing Your Saved Playlist on Tiana Servers.""",
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_music")]]
-            ),
-        )
-    elif query.data == "tiana_musicb":
-        query.message.edit_text(
-            text="""✗ *Here is the help for Admin Commands*:
-
-
-✗ *Admin Commands*:
-
-/pause 
-- Pause the playing music on voice chat.
-
-/resume
-- Resume the paused music on voice chat.
-
-/skip
-- Skip the current playing music on voice chat
-
-/end or /stop
-- Stop the playout.
-
-
-✗ *Authorised Users List*:
-
-Tiana has a additional feature for non-admin users who want to use admin commands
--Auth users can skip, pause, stop, resume Voice Chats even without Admin Rights.
-
-
-/auth [Username or Reply to a Message] 
-- Add a user to AUTH LIST of the group.
-
-/unauth [Username or Reply to a Message] 
-- Remove a user from AUTH LIST of the group.
-
-/authusers 
-- Check AUTH LIST of the group.""",
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_music")]]
-            ),
-        )
-    elif query.data == "tiana_musicc":
-        query.message.edit_text(
-            text="""✗ *Here is the help for Bot Commands*:
-
-
-/start 
-- Start the Tiana Music Bot.
-
-/help 
-- Get Commands Helper Menu with detailed explanations of commands.
-
-/settings 
-- Get Settings dashboard of a group. You can manage Auth Users Mode. Commands Mode from here.
-
-/ping
-- Ping the Bot and check Ram, Cpu etc stats of Tiana.""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_music")]]
-            ),
-        )
-    elif query.data == "tiana_musicd":
-        query.message.edit_text(
-            text=""" *Here is the help for Extra Commands*:
-
-
-
-/lyrics [Music Name]
-- Searches Lyrics for the particular Music on web.
-
-/sudolist 
-- Check Sudo Users of Tiana Music Bot
-
-/song [Track Name] or [YT Link]
-- Download any track from youtube in mp3 or mp4 formats via Tiana.
-
-/queue
-- Check Queue List of Music.
-
-/cleanmode [Enable|Disable]
-- When enabled, Tiana will be deleting her 3rd last message to keep your chat clean.""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_music")]]
-            ),
-        )
-    elif query.data == "tiana_about":
-        query.message.edit_text(
-            text=f"""{BOT_NAME} it's online since January 2022 and it's constantly updated!
-            
-Bot Admins
-                       
-• @{OWNER_USERNAME}, bot creator and main developer.
-            
-• The Doctor, server manager and developer.
-            
-• Manuel 5, developer.
-            
-Support
-            
-• [Click here](https://t.me/{SUPPORT_CHAT}) to consult the updated list of Official Supporters of the bot.
-            
-• Thanks to all our donors for supporting server and development expenses and all those who have reported bugs or suggested new features.
-            
-• We also thank all the groups who rely on our Bot for this service, we hope you will always like it: we are constantly working to improve it!""",
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="about_")]]
-            ),
-        )
-    elif query.data == "tiana_support":
-        query.message.edit_text(
-            text=f"*{BOT_NAME} Support Chats*",
-            parse_mode=ParseMode.MARKDOWN,
+            disable_web_page_preview=False,
             reply_markup=InlineKeyboardMarkup(
                 [
                  [
-                    InlineKeyboardButton(text="Nᴇᴡꜱ", url=f"t.me/{UPDATE_CHANNEL}"),
-                 ],
-                 [
-                    InlineKeyboardButton(text="Sᴜᴘᴘᴏʀᴛ", url=f"t.me/{SUPPORT_CHAT}"),
-                    InlineKeyboardButton(text="Uᴘᴅᴀᴛᴇꜱ", url=f"https://t.me/{UPDATE_CHANNEL}"),
-                 ],
-                 [
-                    InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="about_"),
-                 
+                    InlineKeyboardButton(text="Go Back", callback_data="source_back")
                  ]
                 ]
             ),
         )
-    elif query.data == "tiana_tools":
+    elif query.data == "source_back":
         query.message.edit_text(
-            text="""*Here is the help for the tools module:
-We promise to keep you latest up-date with the latest technology on telegram. 
-we updradge TianaBot everyday to simplifie use of telegram and give a better exprince to users.
-
-Click on below buttons and check amazing tools for users.*""",
-            parse_mode=ParseMode.MARKDOWN,
-            reply_markup=InlineKeyboardMarkup(
-                [
-                 [
-                    InlineKeyboardButton(text="🔎Sᴇᴀʀᴄʜ🔍", callback_data="tiana_toola"),
-                    InlineKeyboardButton(text="🏷️Tᴀɢᴀʟʟ🏷️", callback_data="tiana_toolb"),
-                    InlineKeyboardButton(text="🛠️Kᴀʀᴍᴀ🛠️", callback_data="tiana_toolc"),
-                 ],
-                 [
-                    InlineKeyboardButton(text="✒️Fᴏɴᴛ Gᴇɴ🖊️", callback_data="tiana_toold"),
-                    InlineKeyboardButton(text="🖨️Pᴀꜱᴛᴇ🖨️", callback_data="tiana_toole"),
-                    InlineKeyboardButton(text="🔗Tᴇʟᴇɢʀᴀᴘʜ🔗", callback_data="tiana_toolf"),
-                 ],
-                 [
-                    InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_"),
-                 
-                 ]
-                ]
-            ),
+                PM_START_TEXT,
+                reply_markup=InlineKeyboardMarkup(buttons),
+                parse_mode=ParseMode.MARKDOWN,
+                timeout=60,
+                disable_web_page_preview=False,
         )
-    elif query.data == "tiana_toola":
-        query.message.edit_text(
-            text="""「 Hᴇʟᴘ ᴏғ Sᴇᴀʀᴄʜ 」:
-
- ❍ /google text: Perform a google search
- ❍ /img text: Search Google for images and returns them
- ❍ /app appname: Searches for an app in Play Store and returns its details.
- ❍ /reverse: Does a reverse image search of the media which it was replied to.""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_tools")]]
-            ),
-        )
-    elif query.data == "tiana_toolb":
-        query.message.edit_text(
-            text="""「 Hᴇʟᴘ ᴏғ Tᴀɢᴀʟʟ 」:
-
- ❍ /tagall or @all '(reply to message or add another message) To mention all members in your group, without exception.
-
-Note- Only admins can Use Tagall Command.""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_tools")]]
-            ),
-        )
-    elif query.data == "tiana_toolc":
-        query.message.edit_text(
-            text="""「 Hᴇʟᴘ ᴏғ Kᴀʀᴍᴀ 」:
-
-UPVOTE - Use upvote keywords like "+", "+1", "thanks" etc to upvote a cb.message.
-DOWNVOTE - Use downvote keywords like "-", "-1", etc to downvote a cb.message.
-
-- /karma ON/OFF: Enable/Disable karma in group. 
-- /karma Reply to a message: Check user's karma
-- /karma: Chek karma list of top 10 users""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_tools")]]
-            ),
-        )
-    elif query.data == "tiana_toold":
-        query.message.edit_text(
-            text="""「 Hᴇʟᴘ ᴏғ Fᴏɴᴛ Gᴇɴ 」:
-
- - /weebify text: weebify your text!
- - /bis text: bold your text!
- - /bi text: bold-italic your text!
- - /tiny text: tiny your text!
- - /fsquare text: square-filled your text!
- - /blue text: bluify your text!
- - /latin text: latinify your text!
- - /lined text: lined your text!""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_tools")]]
-            ),
-        )
-    elif query.data == "tiana_toole":
-        query.message.edit_text(
-            text="""「 Hᴇʟᴘ ᴏғ Pᴀꜱᴛᴇ 」:
-
- ❍ /paste: Saves replied content to replies with a url""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_tools")]]
-            ),
-        )
-    elif query.data == "tiana_toolf":
-        query.message.edit_text(
-            text="""「 Hᴇʟᴘ ᴏғ Tᴇʟᴇɢʀᴀᴘʜ 」:
-
- ❍ /tm :Get Telegraph Link Of Replied Media
- ❍ /txt :Get Telegraph Link of Replied Text""",
-            parse_mode=ParseMode.HTML,
-            reply_markup=InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="🔙 𝘽𝙖𝙘𝙠", callback_data="tiana_tools")]]
-            ),
-        )
-    
-    elif query.data == "tiana_vida":
-        query.message.reply_video(
-            TIANA_VIDA,
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,           
-        )
-    elif query.data == "tiana_vidb":
-        query.message.reply_video(
-            TIANA_VIDB,
-            parse_mode=ParseMode.MARKDOWN,
-            disable_web_page_preview=True,           
-        )
-       
 
 @run_async
 def get_help(update: Update, context: CallbackContext):
@@ -842,7 +481,7 @@ def get_help(update: Update, context: CallbackContext):
             chat.id,
             text,
             InlineKeyboardMarkup(
-                [[InlineKeyboardButton(text="Back", callback_data="tiana_")]]
+                [[InlineKeyboardButton(text="Back", callback_data="help_back")]]
             ),
         )
 
@@ -1007,6 +646,40 @@ def get_settings(update: Update, context: CallbackContext):
         send_settings(chat.id, user.id, True)
 
 
+@run_async
+def donate(update: Update, context: CallbackContext):
+    user = update.effective_message.from_user
+    chat = update.effective_chat  # type: Optional[Chat]
+    bot = context.bot
+    if chat.type == "private":
+        update.effective_message.reply_text(
+            DONATE_STRING, parse_mode=ParseMode.MARKDOWN, disable_web_page_preview=True
+        )
+
+        if OWNER_ID != 1663464481 and DONATION_LINK:
+            update.effective_message.reply_text(
+                "You can also donate to the person currently running me "
+                "[here]({})".format(DONATION_LINK),
+                parse_mode=ParseMode.MARKDOWN,
+            )
+
+    else:
+        try:
+            bot.send_message(
+                user.id,
+                DONATE_STRING,
+                parse_mode=ParseMode.MARKDOWN,
+                disable_web_page_preview=True,
+            )
+
+            update.effective_message.reply_text(
+                "I've PM'ed you about donating to my creator!"
+            )
+        except Unauthorized:
+            update.effective_message.reply_text(
+                "Contact me in PM first to get donation information."
+            )
+
 
 def migrate_chats(update: Update, context: CallbackContext):
     msg = update.effective_message  # type: Optional[Message]
@@ -1031,7 +704,7 @@ def main():
 
     if SUPPORT_CHAT is not None and isinstance(SUPPORT_CHAT, str):
         try:
-            dispatcher.bot.sendMessage(f"@{SUPPORT_CHAT}", "𝙏𝙞𝙖𝙣𝙖𝘽𝙤𝙩 𝙐𝙥𝙙𝙖𝙩𝙚𝙙 𝙎𝙪𝙘𝙘𝙚𝙨𝙨𝙛𝙪𝙡𝙡𝙮✅")
+            dispatcher.bot.sendMessage(f"@{SUPPORT_CHAT}", "Me the sage of the six paths is back to serve you.✨")
         except Unauthorized:
             LOGGER.warning(
                 "Bot isnt able to send message to support_chat, go and check!"
@@ -1048,20 +721,23 @@ def main():
     settings_handler = CommandHandler("settings", get_settings)
     settings_callback_handler = CallbackQueryHandler(settings_button, pattern=r"stngs_")
 
-    about_callback_handler = CallbackQueryHandler(tiana_callback_handler, pattern=r"tiana_")
-    Tiana_callback_handler = CallbackQueryHandler(tiana_about_callback, pattern=r"about_")
-  
+    about_callback_handler = CallbackQueryHandler(Masha_about_callback, pattern=r"masha_")
+    source_callback_handler = CallbackQueryHandler(Source_about_callback, pattern=r"source_")
+
+    donate_handler = CommandHandler("donate", donate)
     migrate_handler = MessageHandler(Filters.status_update.migrate, migrate_chats)
 
     # dispatcher.add_handler(test_handler)
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(help_handler)
     dispatcher.add_handler(about_callback_handler)
-    dispatcher.add_handler(Tiana_callback_handler)
+    dispatcher.add_handler(source_callback_handler)
     dispatcher.add_handler(settings_handler)
     dispatcher.add_handler(help_callback_handler)
     dispatcher.add_handler(settings_callback_handler)
     dispatcher.add_handler(migrate_handler)
+    dispatcher.add_handler(donate_handler)
+
     dispatcher.add_error_handler(error_callback)
 
     if WEBHOOK:
@@ -1074,7 +750,7 @@ def main():
             updater.bot.set_webhook(url=URL + TOKEN)
 
     else:
-        LOGGER.info("Started Successfully")
+        LOGGER.info("Using long polling.")
         updater.start_polling(timeout=15, read_latency=4, clean=True)
 
     if len(argv) not in (1, 3, 4):
