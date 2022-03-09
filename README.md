@@ -2,11 +2,11 @@
 
 <h4 align="center">
     A Telegram Powerfull Group Managment Bot written in Python using Pyrogram and Telethon.
-# Tiana Bot
-#### Tiana is a Telegram group managment bot made using Telethon and Pyrogram which makes it modern and faster than most of the exisitng Telegram Chat Managers.
-<p align="center"><img src="https://telegra.ph/file/fae3dd2a2c6e491e4893e.jpg"></p>
+# Sweety Bot
+#### sweety is a Telegram group managment bot made using Telethon and Pyrogram which makes it modern and faster than most of the exisitng Telegram Chat Managers.
+<p align="center"><img src="https://te.legra.ph/file/c653fe1ae1100a9b4df2e.jpg"></p>
 
-#### Tiana's features over other bots:
+#### Sweety's features over other bots:
 - Modern
 - Fast
 - Fully open-source
