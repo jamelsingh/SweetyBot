@@ -17,8 +17,6 @@
 - Smart Ai System
 - Easy To Use
 
-Can be found on Telegram as [@TianaRobot](https://t.me/TIANA_PRINCE_BOT)
-
 ## Deployment
 
 Star ⭐ the repository!!
