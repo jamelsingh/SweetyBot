@@ -65,22 +65,3 @@ $ cp sample.env .env
 ```console
 $ bash start
 ```
-
-</details>
-
-## Contact & Support
-
-- [Telegram Channel](https://t.me/TianaxUpdates)
-- [Telegram Support Group](https://t.me/TianaxSupport)
-- [Contact Owner](https://t.me/PrincexAssistantBot)
-
-## License
-
-Distributed under the [GNU General Public License v3.0 License.](https://github.com/Prince-Botz/TianaBot/blob/main/LICENSE) See `LICENSE.md` for more information.
-
-## Acknowledgements
-
-Special thanks to these amazing projects/people which/who help power Tiana Bot:
-
-- [Prince](https://t.me/NoobxCoder) 
-- [Blaze](https://t.me/PiroxPower)
