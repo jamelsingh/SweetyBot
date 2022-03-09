@@ -64,12 +64,12 @@ RUN apt update && apt upgrade -y && \
 # Pypi package Repo upgrade
 RUN pip3 install --upgrade pip setuptools
 
-# Copy Python Requirements to /root/Tianabot
-RUN git clone -b shiken https://github.com/teamofdevil-x/tiana /root/Tianabot
+# Copy Python Requirements to /root/SweetyBot
+RUN git clone -b shiken https://github.com/jamelsingh /tiana /root/SweetyBot
 WORKDIR /root/Tianabot
 
 #Copy config file to /root/Tianabot
-COPY ./Tianabot/sample_config.py ./Tianabot/config.py* /root/Tianabot/Tianabot/
+COPY ./SweetyBot/sample_config.py ./SweetyBot/config.py* /root/Tianabot/Tianabot/
 
 ENV PATH="/home/bot/bin:$PATH"
 
